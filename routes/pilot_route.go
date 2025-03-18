@@ -13,11 +13,17 @@ func SetupRouter() *gin.Engine {
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"}, // Permite qualquer origem (pode restringir para domínios específicos)
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "PUT"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
+	
+	r.Static("/static", "static")
+
+	r.GET("/", func(c *gin.Context) {
+		c.File("./static/index.html")
+	})
 
 	repo := repositories.NewPilotRepository()
 	service := services.NewPilotService(repo)
