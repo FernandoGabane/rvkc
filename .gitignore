@@ -3,4 +3,5 @@
 docker-compose.yml
 init.sql
 rvkc.iml
+go.sum
 README.md

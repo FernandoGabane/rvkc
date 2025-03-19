@@ -3,9 +3,6 @@ package config
 import (
 	"log"
 	"os"
-	// "os"
-	// "rvkc/models"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

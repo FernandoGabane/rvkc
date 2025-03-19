@@ -16,10 +16,10 @@ import (
 var log = logrus.New()
 
 type PilotController struct {
-	service services.PilotService
+	service services.GenericService[models.Pilot]
 }
 
-func NewPilotController(service services.PilotService) *PilotController {
+func NewPilotController(service services.GenericService[models.Pilot]) *PilotController {
 	return &PilotController{service: service}
 }
 
@@ -42,13 +42,13 @@ func (c *PilotController) CreatePilot(ctx *gin.Context) {
     }
 
 	// if there is no error it means the pilot already exists.
-	if _, err := c.service.GetPilotByDocument(newPilot.Document); err == nil {
+	if _, err := c.service.GetBy("document = ?", newPilot.Document); err == nil {
 		ctx.JSON(http.StatusCreated, gin.H{"errors": "Já existe uma piloto cadastrado com este documento."})
 		return
 	}
 	
 	newPilot.Higienize()
-	if err := c.service.CreatePilot(&newPilot); err != nil {
+	if err := c.service.Create(&newPilot); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao criar piloto"})
 		return
 	}
@@ -57,11 +57,12 @@ func (c *PilotController) CreatePilot(ctx *gin.Context) {
 }
 
 func (c *PilotController) GetPilots(ctx *gin.Context) {
-	pilots, err := c.service.GetPilots()
+	pilots, err := c.service.GetAll()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao buscar pilotos"})
 		return
 	}
+
 	ctx.JSON(http.StatusOK, pilots)
 }
 
@@ -69,7 +70,7 @@ func (c *PilotController) GetPilotByDocument(ctx *gin.Context) {
 	document := ctx.Param("document")
 	log.Info(fmt.Printf("Searching pilot by document: %v", document))
 
-	pilot, err := c.service.GetPilotByDocument(document)
+	pilot, err := c.service.GetBy("document = ?", document)
 	if err != nil {
 		messageError := "Piloto não encontrado"
 		log.Warn(fmt.Errorf("%v: %v", messageError, document))
@@ -90,7 +91,7 @@ func (c *PilotController) UpdatePilot(ctx *gin.Context) {
 		return
 	}
 
-    persistedPilot, err := c.service.GetPilotByDocument(*request.Document)
+    persistedPilot, err := c.service.GetBy("document = ?", request.Document)
     if err != nil {
         ctx.JSON(http.StatusBadRequest, gin.H{"errors": "Piloto não encontrado."})
         return
@@ -105,7 +106,7 @@ func (c *PilotController) UpdatePilot(ctx *gin.Context) {
     }
 	
 	updatePilot.Higienize()
-    err = c.service.UpdatePilot(&updatePilot)
+    err = c.service.Update(&updatePilot)
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao atualizar piloto"})
         return
@@ -117,7 +118,7 @@ func (c *PilotController) UpdatePilot(ctx *gin.Context) {
 
 func (c *PilotController) DeletePilot(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
-	err := c.service.DeletePilot(uint(id))
+	err := c.service.Delete(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao deletar piloto"})
 		return
