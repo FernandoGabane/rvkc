@@ -1,11 +1,13 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/gin-contrib/cors"
+	"rvkc/controllers"
+	"rvkc/models"
 	"rvkc/repositories"
 	"rvkc/services"
-	"rvkc/controllers"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
@@ -25,9 +27,9 @@ func SetupRouter() *gin.Engine {
 		c.File("./static/index.html")
 	})
 
-	repo := repositories.NewPilotRepository()
-	service := services.NewPilotService(repo)
-	pilotController := controllers.NewPilotController(service)
+	repo := repositories.NewGenericRepository[models.Pilot]()
+	service := services.NewGenericService(repo)
+	pilotController := controllers.NewPilotController(*service)
 
 	pilotRoutes := r.Group("/pilots")
 	{
