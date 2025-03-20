@@ -19,9 +19,11 @@ type PilotController struct {
 	service services.GenericService[models.Pilot]
 }
 
+
 func NewPilotController(service services.GenericService[models.Pilot]) *PilotController {
 	return &PilotController{service: service}
 }
+
 
 func (c *PilotController) CreatePilot(ctx *gin.Context) {
 	var request dto.PilotRequest
@@ -56,6 +58,7 @@ func (c *PilotController) CreatePilot(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, newPilot)
 }
 
+
 func (c *PilotController) GetPilots(ctx *gin.Context) {
 	pilots, err := c.service.GetAll()
 	if err != nil {
@@ -65,6 +68,7 @@ func (c *PilotController) GetPilots(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, pilots)
 }
+
 
 func (c *PilotController) GetPilotByDocument(ctx *gin.Context) {
 	document := ctx.Param("document")
