@@ -102,11 +102,18 @@ func (c *ClubController) UpdateClub(ctx *gin.Context) {
 		return
 	}
 
-    persistedClub, err := c.service.GetBy("name = ?", request.Name)
-    if err != nil {
-        ctx.JSON(http.StatusBadRequest, gin.H{"errors": "Club não encontrado."})
-        return
-    }
+    clubParam := ctx.Param("id")
+	clubId, err := strconv.ParseUint(clubParam, 10, 64)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"errors": "Club id inválido"})
+	}
+
+	persistedClub, err := c.service.GetByID(uint(clubId))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao buscar clubs"})
+		return
+	}
 
 	updateClub := models.Club{
         ID: 		persistedClub.ID,

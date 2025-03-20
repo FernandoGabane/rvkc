@@ -52,7 +52,7 @@ func SetupRouter() *gin.Engine {
 		clubRoutes.POST("/", clubController.CreateClub)
 		clubRoutes.GET("/", clubController.GetClubs)
 		clubRoutes.GET("/:id", clubController.GetClub)
-		clubRoutes.PUT("/", clubController.UpdateClub)
+		clubRoutes.PUT("/:id", clubController.UpdateClub)
 	}
 
 	return r
