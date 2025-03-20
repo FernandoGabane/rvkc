@@ -5,12 +5,12 @@ import (
 )
 
 type Club struct {
-    ID         uint   `gorm:"primaryKey" json:"-"`
-	Name       string `gorm:"not null" json:"name"`
-    Recurrence string `gorm:"not null" json:"recurrence"`
-	Weekday    string `gorm:"not null" json:"weekday"`
-	StartAt    string `gorm:"not null" json:"start_at"`
-	EndAt      string `gorm:"not null" json:"end_at"`
+    ID         uint   `gorm:"primaryKey" json:"id"`
+	Name       string `gorm:"not null"   json:"name"`
+    Recurrence string `gorm:"not null"   json:"recurrence"`
+	Weekday    string `gorm:"not null"   json:"weekday"`
+	StartAt    string `gorm:"not null"   json:"start_at"`
+	EndAt      string `gorm:"not null"   json:"end_at"`
 }
 
 func (Club) TableName() string {
