@@ -6,8 +6,6 @@ import (
     "github.com/go-playground/validator/v10"
 )
 
-var Validate = validator.New()
-
 var telefoneRegex = regexp.MustCompile(`^[0-9]{8,15}$`)
 
 func validarTelefone(fl validator.FieldLevel) bool {

@@ -2,9 +2,6 @@ package models
 
 import (
 	"strings"
-
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 )
 
 type Pilot struct {
@@ -20,9 +17,7 @@ func (Pilot) TableName() string {
 }
 
 func (p *Pilot) Higienize() {
-	titleCaser := cases.Title(language.Und)
-
-	p.Name     = titleCaser.String(strings.TrimSpace(p.Name))
+	p.Name     = strings.ToUpper(strings.Join(strings.Fields(p.Name), " "))
 	p.Document = strings.TrimSpace(p.Document)
 	p.Phone    = strings.TrimSpace(p.Phone)
 	p.Email    = strings.TrimSpace(strings.ToLower(p.Email))
