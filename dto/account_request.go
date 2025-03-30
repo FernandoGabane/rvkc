@@ -16,7 +16,7 @@ func init() {
     Validate.RegisterValidation("telefone_numeric", validarTelefone)
 }
 
-type PilotRequest struct {
+type AccountRequest struct {
     Document *string `json:"document" validate:"required,len=11,numeric"`  
     Name     *string `json:"name" validate:"required_without=Update,omitempty,min=3,max=100"`      
     Phone    *string `json:"phone" validate:"required_without=Update,omitempty,telefone_numeric"` 

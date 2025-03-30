@@ -1,32 +1,37 @@
-package controllers
+package service
 
 import (
 	"fmt"
 	"net/http"
+	"rvkc/converter"
 	"rvkc/dto"
 	"rvkc/middleware"
 	"rvkc/models"
-	"rvkc/services"
+	"rvkc/util"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"github.com/gin-gonic/gin"
 )
 
-var log = logrus.New()
 
-type PilotController struct {
-	service services.GenericService[models.Pilot]
+
+type AccountService struct {
+	service GenericService[models.Account]
+	log     *logrus.Logger
 }
 
 
-func NewPilotController(service services.GenericService[models.Pilot]) *PilotController {
-	return &PilotController{service: service}
+func NewAccountService(service GenericService[models.Account]) *AccountService {
+	return &AccountService{
+		service: service,
+		log:     util.GetLogger(),
+	}
 }
 
 
-func (c *PilotController) CreatePilot(ctx *gin.Context) {
-	var request dto.PilotRequest
+func (c *AccountService) CreatePilot(ctx *gin.Context) {
+	var request dto.AccountRequest
 
 	if err := middlewares.ValidateJSON(ctx, &request); err != nil {
 		return 
@@ -36,22 +41,17 @@ func (c *PilotController) CreatePilot(ctx *gin.Context) {
 		return
 	}
 
-    newPilot := models.Pilot{
-        Document: *request.Document,
-        Name:     *request.Name,
-        Phone:    *request.Phone,
-        Email:    *request.Email,
-    }
+	newPilot := converter.ToAccountEntity(&request)
+	newPilot.Higienize()
 
-	// if there is no error it means the pilot already exists.
 	if _, err := c.service.GetBy("document = ?", newPilot.Document); err == nil {
+		// if there is no error it means the pilot already exists.
 		ctx.JSON(http.StatusCreated, gin.H{"errors": "Já existe uma piloto cadastrado com este documento."})
 		return
 	}
 	
-	newPilot.Higienize()
 	if err := c.service.Create(&newPilot); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao criar piloto"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao criar piloto."})
 		return
 	}
 
@@ -59,10 +59,10 @@ func (c *PilotController) CreatePilot(ctx *gin.Context) {
 }
 
 
-func (c *PilotController) GetPilots(ctx *gin.Context) {
+func (c *AccountService) GetPilots(ctx *gin.Context) {
 	pilots, err := c.service.GetAll()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao buscar pilotos"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao buscar pilotos."})
 		return
 	}
 
@@ -70,22 +70,22 @@ func (c *PilotController) GetPilots(ctx *gin.Context) {
 }
 
 
-func (c *PilotController) GetPilotByDocument(ctx *gin.Context) {
+func (c *AccountService) GetPilotByDocument(ctx *gin.Context) {
 	document := ctx.Param("document")
-	log.Info(fmt.Printf("Searching pilot by document: %v", document))
+	c.log.Info(fmt.Printf("Searching pilot by document: %v", document))
 
 	pilot, err := c.service.GetBy("document = ?", document)
 	if err != nil {
 		messageError := "Piloto não encontrado"
-		log.Warn(fmt.Errorf("%v: %v", messageError, document))
+		c.log.Warn(fmt.Errorf("%v: %v", messageError, document))
 		ctx.JSON(http.StatusNotFound, gin.H{"error": messageError})
 		return
 	}
 	ctx.JSON(http.StatusOK, pilot)
 }
 
-func (c *PilotController) UpdatePilot(ctx *gin.Context) {
-	var request dto.PilotRequest
+func (c *AccountService) UpdatePilot(ctx *gin.Context) {
+	var request dto.AccountRequest
 
 	if err := middlewares.ValidateJSON(ctx, &request); err != nil {
 		return 
@@ -101,18 +101,14 @@ func (c *PilotController) UpdatePilot(ctx *gin.Context) {
         return
     }
 
-	updatePilot := models.Pilot{
-        ID: persistedPilot.ID,
-        Document: persistedPilot.Document,
-        Name:  *request.Name,
-        Phone: *request.Phone,
-        Email: *request.Email,   
-    }
-	
+	updatePilot := converter.ToAccountEntity(&request)
 	updatePilot.Higienize()
+	updatePilot.ID = persistedPilot.ID
+
+
     err = c.service.Update(&updatePilot)
     if err != nil {
-        ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao atualizar piloto"})
+        ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao atualizar piloto."})
         return
     }
 
@@ -120,11 +116,11 @@ func (c *PilotController) UpdatePilot(ctx *gin.Context) {
 }
 
 
-func (c *PilotController) DeletePilot(ctx *gin.Context) {
+func (c *AccountService) DeletePilot(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
 	err := c.service.Delete(uint(id))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao deletar piloto"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao deletar piloto."})
 		return
 	}
 	ctx.Status(http.StatusNoContent)

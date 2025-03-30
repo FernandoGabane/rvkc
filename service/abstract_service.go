@@ -1,18 +1,8 @@
-package services
+package service
 
 import (
 	"rvkc/repositories"
 )
-
-
-type Service[T any] interface {
-	Create(entity *T) error
-	GetAll() ([]T, error)
-	GetByID(id uint) (*T, error)
-	GetBy(query interface{}, args ...interface{})(*T, error)
-	Update(entity *T) error
-	Delete(id uint) error
-}
 
 
 type GenericService[T any] struct {

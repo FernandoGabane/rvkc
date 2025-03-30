@@ -45,7 +45,7 @@ func (r *GenericRepository[T]) GetByID(id uint) (*T, error) {
 
 func (r *GenericRepository[T]) GetBy(query interface{}, args ...interface{}) (*T, error) {
 	var entity T
-	err := config.DB.Where(query, args).First(&entity).Error
+	err := config.DB.Where(query, args...).First(&entity).Error
     return &entity, err
 }
 

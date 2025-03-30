@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"net/http"
+	"regexp"
 	"rvkc/dto"
 	"strings"
 
@@ -24,7 +25,8 @@ func TranslateValidationError(err error) map[string]string {
 
 	if validationErrors, ok := err.(validator.ValidationErrors); ok {
 		for _, e := range validationErrors {
-			field := strings.ToLower(e.Field())
+			field := regexp.MustCompile("([a-z0-9])([A-Z])").ReplaceAllString(e.Field(), "${1}_${2}")
+			field = strings.ToLower(field)
 
 			switch e.Tag() {
 			case "required":
@@ -41,6 +43,10 @@ func TranslateValidationError(err error) map[string]string {
 				errorsMap[field] = "O campo " + field + " deve ser um e-mail válido."
 			case "telefone_numeric":
 				errorsMap[field] = "O telefone deve conter apenas números e ter entre 8 e 15 dígitos."
+			case "time_format":
+				errorsMap[field] = "O campo " + field + " deve estar no formato HH:MM."
+			case "conflict_date":
+				errorsMap[field] = "O end_at não pode ser menor ou igual ao start_at."
 			default:
 				errorsMap[field] = "Campo " + field + " inválido."
 			}

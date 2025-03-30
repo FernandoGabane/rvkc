@@ -1,11 +1,6 @@
 package routes
 
 import (
-	"rvkc/controllers"
-	"rvkc/models"
-	"rvkc/repositories"
-	"rvkc/services"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -28,32 +23,8 @@ func SetupRouter() *gin.Engine {
 		c.File("./static/index.html")
 	})
 
-
-	repositoryPilot := repositories.NewGenericRepository[models.Pilot]()
-	servicePilot := services.NewGenericService(repositoryPilot)
-	pilotController := controllers.NewPilotController(*servicePilot)
-
-	repositoryClub := repositories.NewGenericRepository[models.Club]()
-	serviceClub := services.NewGenericService(repositoryClub)
-	clubController := controllers.NewClubController(*serviceClub)
-
-
-	pilotRoutes := r.Group("/pilots")
-	{
-		pilotRoutes.POST("/", pilotController.CreatePilot)
-		pilotRoutes.GET("/", pilotController.GetPilots)
-		pilotRoutes.GET("/:document", pilotController.GetPilotByDocument)
-		pilotRoutes.PUT("/", pilotController.UpdatePilot)
-	}
-
-
-	clubRoutes := r.Group("/clubs")
-	{
-		clubRoutes.POST("/", clubController.CreateClub)
-		clubRoutes.GET("/", clubController.GetClubs)
-		clubRoutes.GET("/:id", clubController.GetClub)
-		clubRoutes.PUT("/:id", clubController.UpdateClub)
-	}
+	SetupAccountsRouter(r)
+	SetupClubRouter(r)
 
 	return r
 }
