@@ -2,12 +2,12 @@ import { DocumentValidator }        from "/static/js/validator/cpfValidator.js";
 import { CheckboxValidator }        from "/static/js/validator/checkboxValidator.js";
 import { applyMaskCpf }             from "/static/js/mask/cpfMask.js";
 import { renderTable }              from "/static/js/component/table.js";
-import { getAll }                   from "/static/js/service/clubService.js";
 import { openModal }                from "/static/js/component/modal.js";
-import { simple }                   from "/static/js/service/accountService.js";
-import { create }                   from "/static/js/service/confirmationService.js";
 import { ErrorResponse }            from "/static/js/error/errorResponse.js";
 import { sortClubsByStartDateDesc } from "/static/js/util/sortList.js";
+import { ClubServiceImpl }          from "../service/clubService.js";
+import { AccountServiceImpl }       from "../service/accountService.js";
+import { ConfirmationServiceImpl }  from "../service/confirmationService.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const form       = document.querySelector("form");
@@ -27,7 +27,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   });
 
-  const clubsResponse = await getAll();
+  const clubService = await new ClubServiceImpl().init();
+  const clubsResponse = await clubService.getAll();
   if (clubsResponse instanceof ErrorResponse) {
     openModal("Erro ao carregar clubes. Tente novamente mais tarde!", false);
     return;
@@ -52,7 +53,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!new CheckboxValidator(checkboxes, "clubs-table-error").isValid)      valid = false;
 
     if (valid) {
-      const accountResponse = await simple(cpfInput.value.replace(/\D/g, ""));
+      const accountService  = await new AccountServiceImpl().init();
+      const accountResponse = await accountService.simple(cpfInput.value.replace(/\D/g, ""));
 
       if (accountResponse instanceof ErrorResponse) {
         openModal(accountResponse, false);
@@ -70,7 +72,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         }))
       };
   
-      const confirmationResponse = await create(payload);
+      const confirmationService = await new ConfirmationServiceImpl().init();
+      const confirmationResponse = await confirmationService.create(payload);
       if (confirmationResponse instanceof ErrorResponse) {
         openModal(confirmationResponse, false);
         return;
