@@ -1,6 +1,6 @@
 import { renderTable }              from "/static/js/component/table.js";
-import { getAll }                   from "/static/js/service/clubService.js";
-import { getByClubId }              from "/static/js/service/confirmationService.js";
+import { ClubServiceImpl }          from "../service/clubService.js";
+import { ConfirmationServiceImpl }  from "../service/confirmationService.js";
 import { openModal }                from "/static/js/component/modal.js";
 import { ErrorResponse }            from "/static/js/error/errorResponse.js";
 import { sortClubsByStartDateDesc } from "/static/js/util/sortList.js";
@@ -13,7 +13,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   // const recordCountClub      = document.getElementById("record-count-clubs");
   const recordCountAccounts  = document.getElementById("record-count-accounts");
 
-  const clubsResponse = await getAll();
+  const clubsService  = await new ClubServiceImpl().init();
+  const clubsResponse = await clubsService.getAll();
   if (clubsResponse instanceof ErrorResponse) {
     openModal("Erro ao carregar clubes. Tente novamente mais tarde!", false);
     return;
@@ -32,7 +33,9 @@ document.addEventListener("DOMContentLoaded", async function () {
   clubInputs.forEach(input => {
     input.addEventListener("change", async function () {
       const clubId = input.value;
-      const accountsResponse = await getByClubId(clubId);
+
+      const confirmationService = await new ConfirmationServiceImpl().init();
+      const accountsResponse    = await confirmationService.getByClubId(clubId);
 
       if (accountsResponse instanceof ErrorResponse) {
         openModal("Erro ao carregar contas. Tente novamente mais tarde!", false);
@@ -45,7 +48,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       recordCountAccounts.textContent = `Total de Pilotos Confirmados: ${accountsResponse.length}`;
     });
   });
-
 
 });
 

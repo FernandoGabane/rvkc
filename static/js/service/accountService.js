@@ -1,50 +1,55 @@
-import { ErrorResponse }      from "../error/errorResponse.js";
+import { ErrorResponse }   from "../error/errorResponse.js";
+import { AbstractService } from "./abstractService.js";
 
-export async function create(accountData) {
-  const response = await fetch("http://localhost:8080/accounts", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify(accountData)
-  });
+export class AccountServiceImpl extends AbstractService {
 
-  if (!response.ok) {
-    return await ErrorResponse.fromResponse(response);
-  }
-
-  return await response.json();
-}
-
-
-export async function simple(accountId) {
-  const response = await fetch(`http://localhost:8080/accounts/${accountId}/simple`, {
-    method: "GET",
-    headers: {
-      "Accept": "application/json"
+  async create(accountData) {
+    const response = await fetch(`${this.profile.service_url}/accounts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(accountData)
+    });
+  
+    if (!response.ok) {
+      return await ErrorResponse.fromResponse(response);
     }
-  });
-
-  if (!response.ok) {
-    return await ErrorResponse.fromResponse(response);
+  
+    return await response.json();
   }
-
-  return await response.json();
-}
-
-
-export async function getAll() {
-  const response = await fetch(`http://localhost:8080/accounts/simple`, {
-    method: "GET",
-    headers: {
-      "Accept": "application/json"
+  
+  
+  async simple(accountId) {
+    const response = await fetch(`${this.profile.service_url}/accounts/${accountId}/simple`, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+  
+    if (!response.ok) {
+      return await ErrorResponse.fromResponse(response);
     }
-  });
-
-  if (!response.ok) {
-    return await ErrorResponse.fromResponse(response);
+  
+    return await response.json();
   }
 
-  return await response.json();
+
+  async getAll() {
+    const response = await fetch(`${this.profile.service_url}/accounts/simple`, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+  
+    if (!response.ok) {
+      return await ErrorResponse.fromResponse(response);
+    }
+  
+    return await response.json();
+  }
+  
 }
