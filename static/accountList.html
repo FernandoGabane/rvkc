@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <title>RVKC</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/css/accountList.css" />
+  <script src="https://kit.fontawesome.com/892399f368.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="container">
+    <div id="header-container"></div>
+    <div class="menu" id="menu-container"></div>
+    <div class="content">
+      <div class="card">
+        <h3>PILOTOS CADASTRADOS</h3>
+        <form id="list-account-form">
+        <div class="table-container">
+          <table>
+            <tbody id="list-account-table-body">
+              <!-- from api -->
+            </tbody>
+          </table>
+        </div>
+        <p id="record-count" class="record-count">Total de Pilotos: 0</p>
+      </div>
+    </div>
+  </div>
+  <div id="footer-container"></div>
+  <script type="module" src="/static/js/headerLoader.js"></script>
+  <script type="module" src="/static/js/footerLoader.js"></script>
+  <script type="module" src="/static/js/menuLoader.js"></script>
+  <script type="module" src="/static/js/impl/accountListImpl.js"></script>
+</body>
+</html>

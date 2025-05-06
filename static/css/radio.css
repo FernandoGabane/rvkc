@@ -1,0 +1,13 @@
+input[type="radio"] {
+    accent-color: #e55315e0;
+  }
+  
+  input[type="radio"] {
+    width: 16px;
+    height: 16px;
+  }
+  
+  input[type="radio"]:checked::before {
+    background-color: #e55315e0;
+  }
+  

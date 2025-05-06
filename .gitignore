@@ -1,7 +1,6 @@
 .idea/
 .vscode/
-docker-compose.yml
-init.sql
 rvkc.iml
 go.sum
 README.md
+__* 

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <title>RVKC</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/892399f368.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/static/css/accountRegister.css" />
+</head>
+<body>
+  <div class="container">
+    <div id="header-container"></div>
+    <div class="menu" id="menu-container"></div>
+    <div class="content">
+      <div class="card">
+        <h3>CADASTRAR PILOTO</h3>
+        <form>
+          <div class="form-group form-icon-group">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Nome" name="account-name" id="account-name" autocomplete="off" />
+            <span class="error-message" id="account-name-error"></span>
+          </div>
+
+          <div class="form-group form-icon-group">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Sobrenome" name="account-surname" id="account-surname" autocomplete="off" />
+            <span class="error-message" id="account-surname-error"></span>
+          </div>
+          
+          <div class="form-group form-icon-group">
+            <i class="fas fa-id-card"></i>
+            <input type="text" placeholder="CPF" name="account-document" id="account-document" autocomplete="off" />
+            <span class="error-message" id="account-document-error"></span>
+          </div>
+        
+          <div class="form-group form-icon-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" placeholder="Email" name="account-email" id="account-email" autocomplete="off" />
+            <span class="error-message" id="account-email-error"></span>
+          </div>
+        
+          <div class="form-group form-icon-group">
+            <i class="fas fa-phone-alt"></i>
+            <input type="tel" placeholder="Telefone" name="account-phone" id="account-phone" autocomplete="off" />
+            <span class="error-message" id="account-phone-error"></span>
+          </div>
+        
+          <button type="submit">Cadastrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="footer-container"></div>
+  <script type="module" src="/static/js/headerLoader.js"></script>
+  <script type="module" src="/static/js/menuLoader.js"></script>
+  <script type="module" src="/static/js/footerLoader.js"></script>
+  <script type="module" src="/static/js/impl/accountRegisterImpl.js"></script>
+</body>
+</html>

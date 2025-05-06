@@ -1,0 +1,13 @@
+.content {
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px;
+    overflow: visible;
+  }
+  
+  @media (min-width: 768px) {
+    .content {
+      padding: 60px 32px;
+    }
+  }
+  

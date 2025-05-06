@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <title>RVKC</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/css/clubRegister.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+  <script src="https://kit.fontawesome.com/892399f368.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="container">
+    <div id="header-container"></div>
+    <div class="menu" id="menu-container"></div>
+
+    <div class="content">
+      <div class="card">
+        <h3>CADASTRAR CLUB</h3>
+        <form>
+          <div class="form-group form-icon-group">
+            <i class="fas fa-book"></i>
+            <input type="text" name="club-name" id="club-name" placeholder="Nome Club" />
+            <span class="error-message" id="club-name-error"></span>
+          </div>
+
+          <div class="form-group form-icon-group">
+            <i class="fas fa-chevron-down"></i>
+            <select name="club-coach-list" id="club-coach-list">
+              <option value="" disabled selected>Selecione o coach</option>
+            </select>
+            <span class="error-message" id="club-coach-error"></span>
+          </div>
+          
+          <div class="form-group form-icon-group">
+              <i class="fas fa-calendar"></i>
+              <input type="text" id="date-input" name="date-input" placeholder="Selecione a data" />
+              <span class="error-message" id="date-error"></span>
+          </div>
+    
+          <div class="form-group form-icon-group">
+            <i class="fas fa-clock"></i>
+            <input type="text" id="start-at" name="start-at" placeholder="Horário Início" />
+            <span class="error-message" id="start-at-error"></span>
+          </div>
+    
+          <div class="form-group form-icon-group">
+            <i class="fas fa-clock"></i>
+            <input type="text" id="end-at" name="end-at" placeholder="Horário Término" />
+            <span class="error-message" id="end-at-error"></span>
+          </div>
+
+          <button type="submit">Cadastrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="footer-container"></div>
+  <script type="module" src="/static/js/component/datepickr.js"></script>
+  <script type="module" src="/static/js/headerLoader.js"></script>
+  <script type="module" src="/static/js/menuLoader.js"></script>
+  <script type="module" src="/static/js/footerLoader.js"></script>
+  <script type="module" src="/static/js/impl/clubRegisterImpl.js"></script>
+</body>
+</html>
