@@ -5,11 +5,12 @@ import (
 )
 
 type Account struct {
-    ID        uint   `gorm:"primaryKey" json:"-"`
-    Document  string `gorm:"unique;not null" json:"document"`
-    Name      string `gorm:"not null" json:"name"`
-    Phone     string `gorm:"not null" json:"phone"`
-    Email     string `gorm:"not null" json:"email"`
+    ID          string          `gorm:"primaryKey"              json:"id"`
+    Document    string          `gorm:"unique       ;not null"  json:"document"`
+    Name        string          `gorm:"not null"                json:"name"`
+    Phone       string          `gorm:"not null"                json:"phone"`
+    Email       string          `gorm:"not null"                json:"email"`
+    Roles       []*Role         `gorm:"many2many:account_role;" json:"roles"`
 }
 
 func (Account) TableName() string {

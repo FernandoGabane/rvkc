@@ -1,0 +1,36 @@
+input,
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  box-sizing: border-box;
+  display: block;
+}
+
+input:focus,
+select:focus {
+  border-color: #e55215;
+  outline: none;
+}
+
+input[type="time"],
+.flatpickr-input {
+  font-size: 14px;
+  padding: 12px 12px 12px 38px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(37%) sepia(97%) saturate(1600%) hue-rotate(0deg) brightness(96%) contrast(93%);
+  cursor: pointer;
+}

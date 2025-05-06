@@ -1,0 +1,24 @@
+[v] club nao cadastrar com data menor atual;
+[v] club nao atualizar com data menor atual;
+[v] pensar em alguma forma de não deixar atualizar um club fechado ou que a data de end_at seja menor que a data atual;
+[v] implementar o scan abaixo em todos os campos do html para erro
+    <span class="error-message" id="club-coach-error"></span>
+[] implementar logs;
+[] implementar teste services;
+[] restrigir cors por ip - ip da nuvem e da minha maquina;
+[] deployar nova versao railway;
+[] abstrair 
+   [v] de:   ctx.JSON(http.StatusCreated, dto.ToClubResponse(&newClub))
+   [v] para: dto.ToClubResponse(&newClub, http.StatusCreated)
+
+[] validacao payload atributo inteiro quando enviado -1, da erro de payload e nao do campo
+[] implementar teste unitario;
+
+front
+    [v] criar tela para cadastro
+    [v] criar tela para confirmar presença club
+
+    - criar tela admin
+        - criar club
+        - atualizar club
+        - pegar lista confirmados

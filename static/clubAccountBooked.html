@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <title>RVKC</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/static/css/clubAccountBooked.css" />  
+  <script src="https://kit.fontawesome.com/892399f368.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="container">
+    <div id="header-container"></div>
+    <div class="menu" id="menu-container"></div>
+    <div class="content">
+      <div class="card">
+        <h3>PILOTOS CONFIRMADOS</h3>      
+        <form id="club-booking-form">
+          <div class="form-group form-icon-group">
+             <div class="table-container">
+               <table>
+                    <!-- <thead>
+                      <tr>
+                      </tr>
+                    </thead> -->
+                  <tbody id="clubs-table-body">
+                      <!-- from api registers --> 
+                  </tbody>
+                </table>
+                <span class="error-message" id="clubs-table-error"></span>
+          </div>
+          <!-- <p id="record-count-clubs" class="record-count">Total de Clubs Abertos: 0</p> -->
+        </div>
+        
+            <div class="form-group form-icon-group">
+              <div class="table-container">
+                <table>
+                    <!-- <thead>
+                      <tr>
+                      </tr>
+                    </thead> -->
+                  <tbody id="accounts-booked-table-body">
+                     <!-- from api registers -->
+                  </tbody>
+                </table>
+             </div>
+             <p id="record-count-accounts" class="record-count">Total de Pilotos Confirmados: 0</p>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="footer-container"></div>
+  <script type="module" src="/static/js/headerLoader.js"></script>
+  <script type="module" src="/static/js/menuLoader.js"></script>
+  <script type="module" src="/static/js/footerLoader.js"></script>
+  <script type="module" src="/static/js/impl/clubAccountBookedImpl.js"></script>
+</body>
+</html>

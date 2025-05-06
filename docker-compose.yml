@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres-database-rvkc:
+    image: postgres:15
+    container_name: postgres-database-rvkc
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - /var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # rvkc:
+  #   image: rvkc
+  #   container_name: rvkc
+  #   environment:
+  #     - DB_HOST=localhost 
+  #     - DB_USER=user
+  #     - DB_PASS=password
+  #     - DB_NAME=kart_club
+  #     - DB_PORT=5432
+  #   ports:
+  #     - 8080:8080
+  #   network_mode: host
+

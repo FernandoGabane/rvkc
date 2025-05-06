@@ -1,44 +1,30 @@
 package converter
 
 import (
-	"log"
+	"strings"
 	"time"
-
 	"rvkc/dto"
 	"rvkc/models"
+	
+	"github.com/google/uuid"
 )
 
+
 func ToClubEntity(clubRequest *dto.ClubRequest) models.Club {
-	dateLayout := "2006-01-02"
-	timeLayout := "15:04"
-
-	parsedDate, err := time.Parse(dateLayout, *clubRequest.Date)
-	if err != nil {
-		log.Printf("Erro ao fazer parse da data: %v", err)
-	}
-
-	startAt, err := time.Parse(timeLayout, *clubRequest.StartAt)
-	if err != nil {
-		log.Printf("Erro ao fazer parse do horário de início: %v", err)
-	}
-
-	endAt, err := time.Parse(timeLayout, *clubRequest.EndAt)
-	if err != nil {
-		log.Printf("Erro ao fazer parse do horário de término: %v", err)
-	}
-
 	return models.Club{
-		Name:    *clubRequest.Name,
-		Date:    parsedDate.Format("2006-01-02"),
-		Weekday: translateWeekday(parsedDate),
-		StartAt: startAt.Format("15:04:05"),
-		EndAt:   endAt.Format("15:04:05"),
-		Slots:   *clubRequest.Slots,
+		ID: 		strings.ToUpper("CLUB_" + uuid.NewString()),
+		Name:   	*clubRequest.Name,
+		Weekday: 	translateWeekday(clubRequest.StartAt.Time),
+		StartAt: 	clubRequest.StartAt.Time,
+		EndAt:   	clubRequest.EndAt.Time,
+		AccountId: 	*clubRequest.AccountId,
+		Slots:   	*clubRequest.Slots,
 	}
 }
 
-func translateWeekday(date time.Time) string {
-	switch date.Weekday() {
+
+func translateWeekday(t time.Time) string {
+	switch t.Weekday() {
 	case time.Monday:
 		return "SEGUNDA-FEIRA"
 	case time.Tuesday:
@@ -51,7 +37,9 @@ func translateWeekday(date time.Time) string {
 		return "SEXTA-FEIRA"
 	case time.Saturday:
 		return "SÁBADO"
-	default:
+	case time.Sunday:
 		return "DOMINGO"
+	default:
+		return ""
 	}
 }

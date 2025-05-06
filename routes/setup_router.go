@@ -1,30 +1,25 @@
 package routes
 
 import (
-	"github.com/gin-contrib/cors"
+	"net/http"
+	"rvkc/middleware"
 	"github.com/gin-gonic/gin"
 )
 
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
+	r.Use(middleware.CORSMiddleware())
 
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // Permite qualquer origem
-		AllowMethods:     []string{"GET", "POST", "PUT"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-	}))
-
-
-	r.Static("/static", "static")
-	r.GET("/", func(c *gin.Context) {
-		c.File("./static/index.html")
+	r.Static("/static", "./static")
+	r.LoadHTMLFiles("static/home.html")
+	r.GET("/", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "home.html", nil)
 	})
 
 	SetupAccountsRouter(r)
 	SetupClubRouter(r)
+	SetupConfirmationRouter(r)
 
 	return r
 }

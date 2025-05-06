@@ -2,135 +2,135 @@ package service
 
 import (
 	"net/http"
+
+	"rvkc/context_error"
 	"rvkc/converter"
 	"rvkc/dto"
 	"rvkc/middleware"
 	"rvkc/models"
 	"rvkc/util"
+
 	"strconv"
-	
-	"github.com/sirupsen/logrus"
+
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
+
 type ClubService struct {
-	service GenericService[models.Club]
-	log     *logrus.Logger
+	serviceClub			GenericService[models.Club]
+	serviceAccount      AccountService
+	log     			*logrus.Logger
 }
 
 
-func NewClubClubService(service GenericService[models.Club]) *ClubService {
-	return &ClubService{
-		service: service,
-		log:     util.GetLogger(),
+func NewClubService(
+	serviceClub GenericService[models.Club],
+	serviceAccount      AccountService,
+) *ClubService {
+	
+		return &ClubService{
+		serviceClub: 	serviceClub,
+		serviceAccount: serviceAccount,
+		log:     	    util.GetLogger(),
 	}
 }
 
 
 func (c *ClubService) CreateClub(ctx *gin.Context) {
 	var request dto.ClubRequest
-
-	if err := middlewares.ValidateJSON(ctx, &request); err != nil {
-		return 
+	if err := middleware.ValidateJSONAndStruct(ctx, &request); err != nil {
+		return
 	}
 
-	if err := middlewares.ValidateStruct(ctx, &request); err != nil {
+	// check account exists
+	if _, err := c.serviceAccount.GetById(ctx, *request.AccountId); err != nil {
+		return
+	}
+	
+	// check start_at is before current time
+	if  !middleware.TimeCompareFutureValidator(request.StartAt.Time) {
+		context_error.ClubStartAtError(ctx)
 		return
 	}
 
 	newClub := converter.ToClubEntity(&request)
 	newClub.Higienize()
 
-	_, err := c.service.GetBy(`
-			date = ? AND (
-				(start_at <= ? AND end_at > ?) OR
-				(start_at < ? AND end_at >= ?) OR
-				(start_at >= ? AND end_at <= ?)
-			)`, newClub.Date, newClub.StartAt, newClub.StartAt, newClub.EndAt, newClub.EndAt, newClub.StartAt, newClub.EndAt,
-	)
-
-	if err == nil {
-		// there is a club registed conflicting start and end time.
-		ctx.JSON(http.StatusConflict, gin.H{"errors": "Já existe um clube com horário conflitante neste dia."})
+	c.checkOverrideRegister(ctx, newClub)
+	if ctx.IsAborted() {
+		return
+	}
+	
+	if err := c.serviceClub.Create(&newClub); err != nil {
+		context_error.ClubPersistError(ctx)
 		return
 	}
 
-	if err != gorm.ErrRecordNotFound {
-		// database generic error
-		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao verificar conflitos."})
-		return
-	}
-
-	if err := c.service.Create(&newClub); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao criar club."})
-		return
-	}
-
-	ctx.JSON(http.StatusCreated, newClub)
+	ctx.JSON(http.StatusCreated, dto.ToClubResponse(&newClub))
 }
 
 
 func (c *ClubService) GetClub(ctx *gin.Context) {
 	clubParam := ctx.Param("id")
-	clubId, err := strconv.ParseUint(clubParam, 10, 64)
 
+	clubs, err := c.GetById(clubParam)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"errors": "Club id inválido."})
-	}
-
-	clubs, err := c.service.GetByID(uint(clubId))
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Club não encontrado."})
+		context_error.ClubNotFoundError(ctx)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, clubs)
+	ctx.JSON(http.StatusOK, dto.ToClubResponse(clubs))
 }
 
 
 func (c *ClubService) GetClubs(ctx *gin.Context) {
-	clubs, err := c.service.GetAll()
+	clubs, err := c.serviceClub.GetAll()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao buscar clubs."})
+		context_error.ClubSearchError(ctx)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, clubs)
+	ctx.JSON(http.StatusOK, dto.ToClubResponseList(clubs))
 }
 
 
 func (c *ClubService) UpdateClub(ctx *gin.Context) {
 	var request dto.ClubRequest
-
-	if err := middlewares.ValidateJSON(ctx, &request); err != nil {
-		return 
+	if err := middleware.ValidateJSONAndStruct(ctx, &request); err != nil {
+		return
+	}
+	// check start_at is before current time
+	if  !middleware.TimeCompareFutureValidator(request.StartAt.Time) {
+		context_error.ClubStartAtError(ctx)
+		return
 	}
 
-	if err := middlewares.ValidateStruct(ctx, &request); err != nil {
+	// check account exists
+	if _, err := c.serviceAccount.GetById(ctx, *request.AccountId); err != nil {
 		return
 	}
 
     clubParam := ctx.Param("id")
-	clubId, err := strconv.ParseUint(clubParam, 10, 64)
-
+	persistedClub, err := c.GetById(clubParam)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"errors": "Club id inválido"})
-	}
-
-	persistedClub, err := c.service.GetByID(uint(clubId))
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Club não encontrado."})
+		context_error.ClubNotFoundError(ctx)
 		return
 	}
 
-	updateClub := converter.ToClubEntity(&request)
+	updateClub    := converter.ToClubEntity(&request)
 	updateClub.ID = persistedClub.ID
 	updateClub.Higienize()
+
+	c.checkOverrideRegister(ctx, updateClub)
+	if ctx.IsAborted() {
+		return
+	}
 	
-    err = c.service.Update(&updateClub)
+    err = c.serviceClub.Update(&updateClub)
     if err != nil {
-        ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao atualizar club."})
+        context_error.ClubPersistError(ctx)
         return
     }
 
@@ -140,10 +140,35 @@ func (c *ClubService) UpdateClub(ctx *gin.Context) {
 
 func (c *ClubService) DeleteClub(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
-	err := c.service.Delete(uint(id))
+	err := c.serviceClub.Delete(uint(id))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"errors": "Erro ao deletar club."})
+		context_error.ClubPersistError(ctx)
 		return
 	}
 	ctx.Status(http.StatusNoContent)
+}
+
+
+func (c *ClubService) GetById(id string) (*models.Club, error) {
+	return c.serviceClub.GetBy("id = ?", id)
+}
+
+
+func (c *ClubService) checkOverrideRegister(ctx *gin.Context, newClub models.Club) {
+	register, err := c.serviceClub.GetBy(
+		"start_at < ? AND end_at > ?",
+		newClub.EndAt, newClub.StartAt,
+	)
+
+	if register.ID != "" {
+		context_error.ClubAlreadyRegisteredError(ctx)
+		ctx.Abort()
+		return
+	}
+
+	if err != gorm.ErrRecordNotFound {
+		context_error.ClubAlreadyRegisteredGenericError(ctx)
+		ctx.Abort()
+		return
+	}
 }

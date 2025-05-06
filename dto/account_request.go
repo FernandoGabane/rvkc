@@ -1,24 +1,28 @@
 package dto
 
 import (
-    "regexp"
-
-    "github.com/go-playground/validator/v10"
+	"rvkc/middleware"
+	"rvkc/models"
 )
 
-var telefoneRegex = regexp.MustCompile(`^[0-9]{8,15}$`)
 
-func validarTelefone(fl validator.FieldLevel) bool {
-    return telefoneRegex.MatchString(fl.Field().String())
-}
+const (
+    ADMIN   = "ADMIN"
+    COACH   = "COACH"
+    DEFAULT = "DEFAULT"
+)
+
 
 func init() {
-    Validate.RegisterValidation("telefone_numeric", validarTelefone)
+    middleware.Validate.RegisterValidation("phone_numeric_format", middleware.PhoneValidator)
+    middleware.Validate.RegisterValidation("document_validator", middleware.DocumentValidator)
 }
 
+
 type AccountRequest struct {
-    Document *string `json:"document" validate:"required,len=11,numeric"`  
-    Name     *string `json:"name" validate:"required_without=Update,omitempty,min=3,max=100"`      
-    Phone    *string `json:"phone" validate:"required_without=Update,omitempty,telefone_numeric"` 
-    Email    *string `json:"email" validate:"required_without=Update,omitempty,email"`            
+    Document       *string               `json:"document" validate:"required,len=11,numeric,document_validator"`  
+    Name           *string               `json:"name"     validate:"required_without=Update,omitempty,min=3,max=100"`      
+    Phone          *string               `json:"phone"    validate:"required_without=Update,omitempty,phone_numeric_format"` 
+    Email          *string               `json:"email"    validate:"required_without=Update,omitempty,email,max=100"`
+    Roles          []*models.Role        `json:"roles"`            
 }
