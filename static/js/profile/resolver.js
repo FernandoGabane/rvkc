@@ -1,11 +1,12 @@
 export async function profile()  {
     let profile;
+    const hostname = window.location.hostname;
 
-    switch (window.PROFILE) {
-    case "prod":
+    switch (hostname) {
+    case "rvkc-production.up.railway.app":
         profile = "/static/js/profile/prod.json";
         break;
-    case "qa":
+    case "'rvkc-qa.up.railway.app'":
         profile = "/static/js/profile/qa.json";
         break;
     default:
