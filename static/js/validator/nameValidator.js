@@ -8,8 +8,8 @@ export class AccountNameValidator extends BaseValidator {
       return;
     }
 
-    if (!/^[A-Za-z]{2,}$/.test(this.value)) {
-      this.set("Informe um nome válido (apenas letras e minímo 2 letras).");
+    if (!/^[A-Za-z]{2,}(?: [A-Za-z]+)*$/.test(this.value.trim())) {
+      this.set("Informe um nome válido (apenas letras e minímo 2 caracteres).");
       return;  
     }
     
