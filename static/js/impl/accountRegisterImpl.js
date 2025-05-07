@@ -8,7 +8,7 @@ import { AccountServiceImpl }   from "../service/accountService.js";
 import { openModal }            from "../component/modal.js";
 import { ErrorResponse }        from "../error/errorResponse.js";
 
-document.addEventListener("DOMContentLoaded", function () {
+export function accountRegisterImpl() {
   const form = document.querySelector("form");
 
   const nameInput     = document.getElementById("account-name");
@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
-
 
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -59,9 +58,9 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      openModal("Piloto registrado com sucesso!",true, () => {
+      openModal("Piloto registrado com sucesso!", true, () => {
         form.reset();
       });
     }
   });
-});
+}

@@ -1,37 +1,53 @@
 <nav class="navigation-menu">
-    <div class="profile">
-      <span class="profile-img"><img src="/static/img/helmet-icon.png" alt="Imagem de perfil" /></span>
-      <span><p class="name">Olá, Piloto</p></span>
-    </div>
-    <ul class="list-nav">
-      <li class="item-nav">
-        <!-- <i class="fas fa-book icon"></i> -->
-        <a class="link-nav link-nav-arrow">
-        <i class="fas fa-car icon"></i>Piloto</a>
-        <ul class="list-nav-second hide">
+  <div class="profile">
+    <span class="profile-img"><img src="/static/img/helmet1.png" alt="Imagem de perfil" /></span>
+    <span><p class="name">Olá, Piloto</p></span>
+  </div>
 
+  <ul class="list-nav">
+    <li class="item-nav">
+      <a href="#" class="link-nav link-nav-arrow">
+        <i class="fas fa-car icon"></i>Piloto
+      </a>
+      <ul class="list-nav-second hide">
+        <li class="item-nav-second">
+          <a href="#"
+              data-load="/static/accountRegister.html"
+              data-style="/static/css/accountRegister.css"
+              data-script="/static/js/impl/accountRegisterImpl.js"
+              data-init="accountRegisterImpl">
+              Cadastrar
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="item-nav">
+      <a href="#" class="link-nav link-nav-arrow">
+        <i class="fas fa-book icon"></i>Club
+      </a>
+         <ul class="list-nav-second hide">
           <li class="item-nav-second">
-            <a href="/static/accountRegister.html">Cadastrar</a>
-          </li>
-        
-        </ul>
-      </li>
-      
-      <li class="item-nav">
-        <a class="link-nav link-nav-arrow">
-        <i class="fas fa-book icon"></i>Club</a>
-          <ul class="list-nav-second hide">
-            <li class="item-nav-second">
-              <a href="/static/clubBook.html">Marcar Presença</a>
-          </li>
-          <li class="item-nav-second">
-            <a href="/static/clubAccountBooked.html">Confirmados</a>
-          </li>
-        </ul>
-      </li>
-      <!-- <li class="item-nav">
-        <a class="link-nav link-nav-arrow">
-        <i class="fas fa-book icon"></i>Documentações</a>
-      </li> -->
-    </ul>
+            <a href="#"
+                data-load="/static/clubBook.html"
+                data-style="/static/css/clubBook.css"
+                data-script="/static/js/impl/clubBookImpl.js"
+                data-init="clubBookImpl">
+                Marcar Presença
+           </a>
+             <!-- <a href="#" data-load="/static/clubBook.html">Marcar Presença</a> -->
+        </li>
+        <li class="item-nav-second">
+          <a href="#"
+              data-load="/static/clubAccountBooked.html"
+              data-style="/static/css/clubAccountBooked.css"
+              data-script="/static/js/impl/clubAccountBookedImpl.js"
+              data-init="clubAccountBookedImpl">
+              Confirmados
+          </a>
+             <!-- <a href="#" data-load="/static/clubAccountBooked.html">Confirmados</a> -->
+        </li>
+      </ul>
+    </li>
+  </ul>
 </nav>

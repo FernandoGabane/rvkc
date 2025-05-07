@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"net/http"
 	"rvkc/context_error"
 	"rvkc/converter"
@@ -13,16 +12,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
 type AccountService struct {
 	accountService GenericService[models.Account]
 	roleService    RoleService
-	log            *logrus.Logger
 }
-
 
 func NewAccountService(
 	accountService GenericService[models.Account],
@@ -32,22 +28,16 @@ func NewAccountService(
 	return &AccountService{
 		accountService: accountService,
 		roleService:    roleService,
-		log:            util.GetLogger(),
 	}
 }
 
-
 func (c *AccountService) CreateAccount(ctx *gin.Context) {
 	var request dto.AccountRequest
-
-	if err := middleware.ValidateJSON(ctx, &request); err != nil {
+	if err := middleware.ValidateJSONAndStruct(ctx, &request); err != nil {
 		return
 	}
 
-	if err := middleware.ValidateStruct(ctx, &request); err != nil {
-		return
-	}
-
+	middleware.LoggerInfo("creating account", middleware.ToJsonString(request))
 	roles, err := c.roleService.GetByName("DEFAULT")
 	if err != nil {
 		context_error.RoleNotFoundError(ctx)
@@ -57,9 +47,10 @@ func (c *AccountService) CreateAccount(ctx *gin.Context) {
 	newAccount := converter.ToAccountEntity(&request)
 	newAccount.Higienize()
 
+	middleware.LoggerInfo("checking if account is already created with document", *request.Document)
 	if _, err := c.FindAccountByDocument(ctx, newAccount.Document); err == nil {
 		context_error.AccountAlreadyRegisteredError(ctx)
-		return	
+		return
 	}
 
 	associations := util.MakeAssociationSlice("Roles", []*models.Role{roles})
@@ -70,9 +61,11 @@ func (c *AccountService) CreateAccount(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, dto.ToAccountResponse(&newAccount))
-}
+	response := dto.ToAccountResponse(&newAccount)
+	middleware.LoggerInfo("account created successfully", middleware.ToJsonString(response))
 
+	ctx.JSON(http.StatusCreated, response)
+}
 
 func (c *AccountService) GetAccounts(ctx *gin.Context) {
 	account, err := c.GetAllAndRoles(ctx)
@@ -84,10 +77,9 @@ func (c *AccountService) GetAccounts(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dto.ToAccountResponseList(account))
 }
 
-
 func (c *AccountService) GetAccountByDocument(ctx *gin.Context) {
 	document := ctx.Param("document")
-	c.log.Info(fmt.Printf("Searching account by document: %v", document))
+	// c.log.Info(fmt.Printf("Searching account by document: %v", document))
 
 	account, err := c.GetByDocumentAndRoles(ctx, document)
 	if err != nil {
@@ -97,10 +89,9 @@ func (c *AccountService) GetAccountByDocument(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dto.ToAccountResponse(account))
 }
 
-
 func (c *AccountService) GetAccountSimpleByDocument(ctx *gin.Context) {
 	document := ctx.Param("document")
-	c.log.Info(fmt.Printf("Searching account by document: %v", document))
+	// c.log.Info(fmt.Printf("Searching account by document: %v", document))
 
 	account, err := c.GetByDocumentAndRoles(ctx, document)
 	if err != nil {
@@ -110,9 +101,8 @@ func (c *AccountService) GetAccountSimpleByDocument(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dto.ToAccountSimpleResponse(account))
 }
 
-
 func (c *AccountService) GetAccountsSimple(ctx *gin.Context) {
-	c.log.Info(fmt.Printf("Searching all accounts simple."))
+	// c.log.Info(fmt.Printf("Searching all accounts simple."))
 
 	account, err := c.GetAllAndRoles(ctx)
 	if err != nil {
@@ -121,8 +111,6 @@ func (c *AccountService) GetAccountsSimple(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, dto.ToAccountSimpleResponseList(account))
 }
-
-
 
 func (c *AccountService) UpdateAccount(ctx *gin.Context) {
 	var request dto.AccountRequest
@@ -170,7 +158,6 @@ func (c *AccountService) UpdateAccount(ctx *gin.Context) {
 	ctx.Status(http.StatusAccepted)
 }
 
-
 func (c *AccountService) DeleteAccount(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
 	err := c.accountService.Delete(uint(id))
@@ -181,12 +168,9 @@ func (c *AccountService) DeleteAccount(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-
-
 func (c *AccountService) FindAccountByDocument(ctx *gin.Context, document string) (*models.Account, error) {
 	return c.accountService.GetBy("document = ?", document)
 }
-
 
 func (c *AccountService) GetByDocument(ctx *gin.Context, document string) (*models.Account, error) {
 	account, err := c.accountService.GetBy("document = ?", document)
@@ -206,7 +190,6 @@ func (c *AccountService) GetByDocument(ctx *gin.Context, document string) (*mode
 	return account, nil
 }
 
-
 func (c *AccountService) GetById(ctx *gin.Context, id string) (*models.Account, error) {
 	account, err := c.accountService.GetBy("id = ?", id)
 
@@ -225,7 +208,6 @@ func (c *AccountService) GetById(ctx *gin.Context, id string) (*models.Account, 
 	return account, nil
 }
 
-
 func (c *AccountService) GetByDocumentAndRoles(ctx *gin.Context, document string) (*models.Account, error) {
 	account, accountServiceErr := c.GetByDocument(ctx, document)
 
@@ -242,7 +224,6 @@ func (c *AccountService) GetByDocumentAndRoles(ctx *gin.Context, document string
 	return account, nil
 }
 
-
 func (c *AccountService) GetAllAccounts(ctx *gin.Context) ([]*models.Account, error) {
 	account, err := c.accountService.GetAll()
 
@@ -255,7 +236,6 @@ func (c *AccountService) GetAllAccounts(ctx *gin.Context) ([]*models.Account, er
 	return account, nil
 }
 
-
 func (c *AccountService) GetAllAndRoles(ctx *gin.Context) ([]*models.Account, error) {
 	account, err := c.GetAllAccounts(ctx)
 	if err != nil {
@@ -266,7 +246,7 @@ func (c *AccountService) GetAllAndRoles(ctx *gin.Context) ([]*models.Account, er
 		roles, err := c.roleService.GetRolesByAccount(ctx, account[i].ID)
 
 		if err != nil {
-			return nil, err	
+			return nil, err
 		}
 
 		account[i].Roles = roles
