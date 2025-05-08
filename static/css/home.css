@@ -1,0 +1,28 @@
+h1 {
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-top: 2rem;
+    color: #d35400; /* opcional: cor elegante, pode combinar com seu gradiente */
+  }
+
+.home-image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  @media (max-width: 768px) {
+    .home-image {
+      max-width: 90%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .home-image {
+      max-width: 80%;
+    }
+  }
+  

@@ -1,0 +1,79 @@
+.footer .social-icons a[href*="facebook"] {
+    color: #1877f2;
+  }
+  .footer .social-icons a[href*="twitter"] {
+    color: #1da1f2;
+  }
+  .footer .social-icons a[href*="instagram"] {
+    color: #e1306c;
+  }
+  .footer .social-icons a[href*="linkedin"] {
+    color: #0077b5;
+  }
+  .footer .social-icons a[href*="youtube"] {
+    color: #ff0000;
+  }
+  .footer .social-icons a[href*="tiktok"] {
+    color: #010101;
+  }
+
+.footer .social-icons a:hover {
+    transform: scale(1.2);
+}
+
+html, body {
+    height: 100%;
+}
+  
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer {
+    background-color: #f7f7f7;
+    color: #fff;
+    padding: 24px 16px;
+    text-align: center;
+    margin-top: auto;
+}
+  
+.footer .social-icons {
+    margin-bottom: 12px;
+}
+  
+.footer .social-icons a {
+    color: #ffffff;
+    margin: 0 8px;
+    font-size: 20px;
+    display: inline-block;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.footer .social-icons a:hover {
+    transform: scale(1.2);
+    color: #0a62dd;
+}
+  
+.footer .copyright {
+    font-size: 14px;
+    color: #ccc;
+}
+  
+@media (max-width: 480px) {
+    .footer .social-icons a {
+        font-size: 18px;
+        margin: 0 6px;
+    }
+  
+    .footer {
+      padding: 20px 12px;
+    }
+}
+  

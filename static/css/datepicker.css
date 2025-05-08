@@ -1,0 +1,44 @@
+/* Cores e destaques do calendário */
+.flatpickr-day.selected,
+.flatpickr-day.today.selected,
+.flatpickr-day.today,
+.flatpickr-day:focus,
+.flatpickr-day:hover,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day.inRange {
+  background: #e55215 !important;
+  border-color: #e55215 !important;
+  color: #fff !important;
+}
+
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg {
+  fill: #fff !important;
+}
+
+.flatpickr-months .flatpickr-month,
+.flatpickr-current-month input.cur-year,
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  background-color: #e55215 !important;
+  color: #fff !important;
+}
+
+/* Estilo dos inputs gerados pelo Flatpickr */
+.flatpickr-input {
+  display: block !important;
+  width: 100% !important;
+  height: auto;
+  padding: 12px 12px 12px 38px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  box-sizing: border-box;
+}
+
+/* Hover na área de am/pm */
+.flatpickr-time .flatpickr-am-pm:hover {
+  background-color: #ffe7d8 !important;
+}
