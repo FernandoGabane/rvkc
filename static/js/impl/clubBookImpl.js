@@ -66,11 +66,14 @@ export function clubBookImpl() {
           const selectedClubIds = Array.from(form.querySelectorAll('input[type="checkbox"][name="clubs"]:checked'))
             .map(cb => cb.value);
 
+          const selectedStatus = form.querySelector('input[name="confirmation"]:checked').value;
+          const status = selectedStatus === "confirmar" ? "CONFIRMED" : "UNCONFIRMED";
+
           const payload = {
             confirmations: selectedClubIds.map(clubId => ({
               club_id: clubId,
               account_id: accountResponse.id,
-              status: "CONFIRMED"
+              status: status
             }))
           };
       
@@ -81,7 +84,7 @@ export function clubBookImpl() {
             return;
           }
 
-          openModal("Confirmações registradas com sucesso!", true, () => {
+          openModal("Registro enviado com sucesso!", true, () => {
             form.reset();
 
             document.querySelectorAll('input[type="checkbox"][name="club"]').forEach(cb => {

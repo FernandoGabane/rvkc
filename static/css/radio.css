@@ -1,13 +1,23 @@
+.radio-group {
+  display: flex;
+  justify-content: center; 
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.radio-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 input[type="radio"] {
-    accent-color: #e55315e0;
-  }
-  
-  input[type="radio"] {
-    width: 16px;
-    height: 16px;
-  }
-  
-  input[type="radio"]:checked::before {
-    background-color: #e55315e0;
-  }
-  
+  accent-color: #e55315e0;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+
+}

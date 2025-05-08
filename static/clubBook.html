@@ -23,6 +23,17 @@
       <input type="text" placeholder="CPF" name="account-document" id="account-document" autocomplete="off" />
       <span class="error-message" id="account-document-error"></span>
     </div>
-    <button type="submit">CONFIRMAR</button>
+    <div class="form-group radio-group">
+      <label class="radio-option">
+        <input type="radio" name="confirmation" value="confirmar" checked />
+        <span>Confirmar</span>
+      </label>
+      <label class="radio-option">
+        <input type="radio" name="confirmation" value="desconfirmar" />
+        <span>Desconfirmar</span>
+      </label>
+    </div>
+    
+    <button type="submit">ENVIAR</button>
   </form>
 </div>
