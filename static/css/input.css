@@ -5,7 +5,7 @@ select {
   border-radius: 8px;
   border: 1px solid #ccc;
   transition: border-color 0.3s;
-  font-size: 14px;
+  font-size: 16px; /* ← EVITA ZOOM AUTOMÁTICO NO iOS */
   background-color: #fff;
   color: #333;
   box-sizing: border-box;
@@ -20,7 +20,7 @@ select:focus {
 
 input[type="time"],
 .flatpickr-input {
-  font-size: 14px;
+  font-size: 16px; /* ← também ajustado por conta do iOS */
   padding: 12px 12px 12px 38px;
   border-radius: 8px;
   border: 1px solid #ccc;

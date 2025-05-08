@@ -14,7 +14,8 @@ export function menuActions() {
 
   // Menu hambúrguer
   const iconMenu = document.querySelector(".icon-menu");
-  iconMenu?.addEventListener("click", () => {
+  iconMenu?.addEventListener("click", (e) => {
+    e.stopPropagation(); // <-- impede que o clique feche o menu
     document.body.classList.toggle("__move");
   });
 
